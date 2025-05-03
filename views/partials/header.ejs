@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- FontAwesome for Hamburger Icon -->
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+  <!-- Navbar -->
+  <nav class="bg-indigo-700 text-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <!-- Logo or Title -->
+        <div class="text-3xl font-bold">
+          SSO Dashboard
+        </div>
+        
+        <!-- Navbar Links for Desktop -->
+        <div class="hidden md:flex space-x-8">
+          <a href="/dashboard" class="hover:text-indigo-300 transition-colors duration-300">Home</a>
+          <a href="/dashboard/products" class="hover:text-indigo-300 transition-colors duration-300">Manage Products</a>
+          <a href="/dashboard/users" class="hover:text-indigo-300 transition-colors duration-300">Manage Users</a>
+          <a href="/auth/logout" class="hover:text-indigo-300 transition-colors duration-300">Logout</a>
+        </div>
+
+        <!-- Hamburger Menu for Mobile -->
+        <div class="md:hidden flex items-center">
+          <button id="navbar-toggle" class="text-white focus:outline-none">
+            <i class="fas fa-bars text-2xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar & Main Content Layout -->
+  <div class="flex min-h-screen bg-gray-100">
+    <!-- Sidebar (hidden by default on mobile) -->
+    <div id="sidebar" class="w-64 bg-indigo-700 text-white p-4 md:block hidden transition-transform duration-300 ease-in-out transform -translate-x-full md:translate-x-0">
+      <div class="text-2xl font-semibold mb-6">Dashboard</div>
+      <ul class="space-y-6">
+        <li><a href="/dashboard" class="hover:bg-indigo-600 p-2 rounded-lg transition-colors">Home</a></li>
+        <li><a href="/dashboard/products" class="hover:bg-indigo-600 p-2 rounded-lg transition-colors">Manage Products</a></li>
+        <li><a href="/dashboard/users" class="hover:bg-indigo-600 p-2 rounded-lg transition-colors">Manage Users</a></li>
+        <li><a href="/auth/logout" class="hover:bg-indigo-600 p-2 rounded-lg transition-colors">Logout</a></li>
+      </ul>
+    </div>
+
+    
+
+  <script>
+    // Sidebar Toggle for Mobile
+    const sidebarToggleButton = document.getElementById('navbar-toggle');
+    const sidebar = document.getElementById('sidebar');
+
+    sidebarToggleButton.addEventListener('click', () => {
+      sidebar.classList.toggle('-translate-x-full');
+    });
+  </script>

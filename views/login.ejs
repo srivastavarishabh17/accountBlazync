@@ -1,20 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login</title>
-</head>
-<body>
-  <h1>Login</h1>
-  <form action="/auth/login" method="POST">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required>
-    <br>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
-    <br>
-    <button type="submit">Login</button>
-  </form>
-</body>
-</html>
+<%- include('partials/headerlogin', { title: 'Login' }) %>
+
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+  <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+    <h2 class="text-2xl font-bold mb-6 text-center">Welcome Back</h2>
+    
+    <form action="/auth/login" method="POST" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Username</label>
+        <input type="text" name="username" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none px-4 py-2" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Password</label>
+        <input type="password" name="password" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none px-4 py-2" />
+      </div>
+
+      <button type="submit" class="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 transition">
+        Login
+      </button>
+    </form>
+
+    <p class="mt-4 text-sm text-center text-gray-600">
+      Don’t have an account? <a href="/auth/register" class="text-indigo-600 hover:underline">Register here</a>
+    </p>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

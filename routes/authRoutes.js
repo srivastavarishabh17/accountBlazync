@@ -6,8 +6,16 @@ const Product = require('../models/Product');
 const router = express.Router();
 
 // Register Route - Show Registration Form
-router.get('/register', (req, res) => {
-  res.render('register');
+
+
+router.get('/register', async (req, res) => {
+  try {
+    const products = await Product.find(); // Fetch all products
+    res.render('register', { products });  // Pass to EJS
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
 });
 
 // Register Route - Handle Form Submission
@@ -52,11 +60,43 @@ router.post('/login', async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.status(200).json({ token });
+
+    // Store token in session
+    req.session.token = token;
+
+    res.redirect('/dashboard');
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
+router.post('api/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+
+    // Generate JWT token
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.status(200).json({ token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+router.get('/logout', (req, res) => {
+  // Destroy the session (if using express-session)
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ message: 'Failed to log out' });
+    }
+    // Redirect to the login page or home page
+    res.redirect('/auth/login');
+  });
+});
 module.exports = router;

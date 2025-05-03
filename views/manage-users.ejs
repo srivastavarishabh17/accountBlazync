@@ -1,0 +1,39 @@
+<%- include('partials/header', { title: 'Manage Users' }) %>
+
+<div class="max-w-7xl mx-auto p-6">
+  <div class="text-2xl font-bold mb-4">Manage Users</div>
+  
+  <div class="flex justify-between mb-4">
+    <a href="/users/create" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">Add New User</a>
+  </div>
+
+  <div class="space-y-4">
+    <div class="bg-white shadow p-4 rounded-lg">
+      <h3 class="text-xl font-semibold mb-2">User List</h3>
+      <table class="w-full table-auto">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="py-2 px-4">Username</th>
+            <th class="py-2 px-4">Email</th>
+            <th class="py-2 px-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Loop through users and display them -->
+          <% users.forEach(user => { %>
+            <tr>
+              <td class="py-2 px-4"><%= user.username %></td>
+              <td class="py-2 px-4"><%= user.email %></td>
+              <td class="py-2 px-4">
+                <a href="/users/edit/<%= user._id %>" class="text-indigo-600 hover:text-indigo-800">Edit</a>
+                <a href="/users/delete/<%= user._id %>" class="text-red-600 hover:text-red-800 ml-4">Delete</a>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
