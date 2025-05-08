@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Product = require('../models/Product');
 const router = express.Router();
+const LoginLog = require('../models/Log'); // optional: if logging to DB
 
 // Register Route - Show Registration Form
 
@@ -41,6 +42,76 @@ router.post('/register', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+
+router.get('/', async (req, res) => {
+  const { username, password, redirect } = req.query;  // <-- changed from req.body
+console.log(req.query)
+  if (!password || (!username)) {
+    return res.status(400).json({ message: 'Username/email and password are required.' });
+  }
+
+  try {
+    const user = await User.findOne({
+      $or: [{ username }],
+    });
+
+    if (!user) {
+      await logAttempt(null, req.ip, false);
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
+
+ // Compare the hashed password received in the query with the stored hashed password
+ if (password !== user.password) {
+  await logAttempt(user._id, req.ip, false);
+  return res.status(400).json({ message: 'Invalid credentials Password' });
+}
+
+    const token = jwt.sign(
+      { userId: user._id, username: user.username, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    await logAttempt(user._id, req.ip, true);
+    if (redirect) {
+      // Append the access token to the redirect URL
+      const redirectUrl = `${redirect}?access_token=${token}`;
+      return res.redirect(redirectUrl);
+    }
+    
+    res.json({
+      message: 'Login successful',
+      access_token: token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        name: user.name,
+      },
+    });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Logging function remains the same
+async function logAttempt(userId, ip, success) {
+  try {
+    await LoginLog.create({
+      user: userId,
+      ip,
+      success,
+      timestamp: new Date(),
+    });
+  } catch (err) {
+    console.error('Login logging failed:', err);
+  }
+}
+
+
 
 // Login Route - Show Login Form
 router.get('/login', (req, res) => {
